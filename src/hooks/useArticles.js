@@ -37,3 +37,17 @@ export function useArticle(slug) {
 
   return { article, isLoading, error }
 }
+
+export function useIncrementViews(articleId) {
+  useEffect(() => {
+    if (!articleId) return
+    const key = `viewed_${articleId}`
+    if (sessionStorage.getItem(key)) return
+    
+    fetch(`${import.meta.env.VITE_API_URL}/articles/id/${articleId}/views`, {
+      method: 'POST',
+    }).then(() => {
+      sessionStorage.setItem(key, '1')
+    }).catch(() => {})
+  }, [articleId])
+}

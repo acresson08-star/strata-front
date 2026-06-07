@@ -49,7 +49,7 @@ export default function ArticleList() {
       {confirmId && (
         <div className={styles.overlay}>
           <div className={styles.confirm}>
-            <p>Supprimer cet article définitivement ?</p>
+            <p className={styles.confirmText}>Supprimer cet article définitivement ?</p>
             <div className={styles.confirmActions}>
               <Button variant="secondary" onClick={() => setConfirmId(null)}>Annuler</Button>
               <Button onClick={() => handleDelete(confirmId)}>Supprimer</Button>
@@ -59,7 +59,10 @@ export default function ArticleList() {
       )}
 
       <header className={styles.header}>
-        <h1 className={styles.title}>Articles</h1>
+        <div>
+          <p className={styles.eyebrow}>Administration</p>
+          <h1 className={styles.title}>Articles</h1>
+        </div>
         <Link to="/admin/articles/new">
           <Button>+ Nouvel article</Button>
         </Link>
@@ -81,51 +84,61 @@ export default function ArticleList() {
 
       {isLoading && <p className={styles.state}>Chargement…</p>}
       {error     && <p className={styles.state}>Erreur de chargement.</p>}
-
       {!isLoading && !error && articles.length === 0 && (
         <p className={styles.state}>Aucun article trouvé.</p>
       )}
 
       {!isLoading && !error && articles.length > 0 && (
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Titre</th>
-              <th>Catégorie</th>
-              <th>Statut</th>
-              <th>Date</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {articles.map((article) => (
-              <tr key={article.id} className={styles.row}>
-                <td className={styles.titleCell}>{article.title}</td>
-                <td>{article.category?.name || '—'}</td>
-                <td>
-                  <span className={`${styles.status} ${styles[article.status.toLowerCase()]}`}>
-                    {article.status === 'PUBLISHED' ? 'Publié' : 'Brouillon'}
-                  </span>
-                </td>
-                <td className={styles.date}>
-                  {article.publishedAt ? formatDate(article.publishedAt) : '—'}
-                </td>
-                <td className={styles.actions}>
-                  <Link to={`/admin/articles/${article.id}/edit`}>
-                    <Button variant="ghost" size="sm">Éditer</Button>
-                  </Link>
-                  <button
-                    className={styles.deleteBtn}
-                    onClick={() => setConfirmId(article.id)}
-                    aria-label="Supprimer"
-                  >
-                    ✕
-                  </button>
-                </td>
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th className={styles.th}>Titre</th>
+                <th className={styles.th}>Catégorie</th>
+                <th className={styles.th}>Statut</th>
+                <th className={styles.th}>Vues</th>
+                <th className={styles.th}>Date</th>
+                <th className={styles.th}></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {articles.map((article) => (
+                <tr key={article.id} className={styles.row}>
+                  <td className={styles.titleCell}>
+                    <Link to={`/admin/articles/${article.id}/edit`} className={styles.titleLink}>
+                      {article.title}
+                    </Link>
+                  </td>
+                  <td className={styles.td}>
+                    {article.category ? (
+                      <span className={styles.catBadge}>{article.category.name}</span>
+                    ) : '—'}
+                  </td>
+                  <td className={styles.td}>
+                    <span className={`${styles.status} ${styles[article.status.toLowerCase()]}`}>
+                      {article.status === 'PUBLISHED' ? 'Publié' : 'Brouillon'}
+                    </span>
+                  </td>
+                  <td className={styles.tdViews}>
+                    {article.views ?? 0}
+                  </td>
+                  <td className={styles.tdDate}>
+                    {article.publishedAt ? formatDate(article.publishedAt) : '—'}
+                  </td>
+                  <td className={styles.tdActions}>
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={() => setConfirmId(article.id)}
+                      aria-label="Supprimer"
+                    >
+                      ✕
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )

@@ -1,25 +1,30 @@
 import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { articlesService } from '../../../services/articles.service'
+import { formatDate } from '../../../utils/formatDate'
 import styles from './Dashboard.module.css'
 
-const STATS = [
-  { value: '24', label: 'Articles publiés', delta: '+3 ce mois' },
-  { value: '6',  label: 'Brouillons',       delta: '2 en attente' },
-  { value: '—',  label: 'Vues ce mois',     delta: 'API non connectée' },
-]
-
-const RECENT_ARTICLES = [
-  { id: 1, title: 'MJ Lenderman, le spleen et la guitare',    category: 'Interview', status: 'Publié',    date: '23 mai 2026' },
-  { id: 2, title: 'Le retour surprise de The National',       category: 'Actus',     status: 'Publié',    date: '20 mai 2026' },
-  { id: 3, title: 'La country aujourd\'hui',                  category: 'Dossier',   status: 'Brouillon', date: '18 mai 2026' },
-  { id: 4, title: 'Explorer : 10 titres à découvrir',         category: 'Playlist',  status: 'Publié',    date: '15 mai 2026' },
-  { id: 5, title: 'Sharon Van Etten — J\'écris pour comprendre', category: 'Interview', status: 'Brouillon', date: '12 mai 2026' },
-]
-
 export default function Dashboard() {
+  const [stats, setStats]       = useState(null)
+  const [recents, setRecents]   = useState([])
+  const [isLoading, setLoading] = useState(true)
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${import.meta.env.VITE_API_URL}/articles/stats`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      }).then(r => r.json()),
+      articlesService.getAll({ limit: 5 }),
+    ])
+      .then(([statsData, articles]) => {
+        setStats(statsData)
+        setRecents(articles)
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
   return (
     <div className={styles.page}>
-
-      {/* Header */}
       <header className={styles.header}>
         <div>
           <p className={styles.eyebrow}>Administration</p>
@@ -30,18 +35,24 @@ export default function Dashboard() {
         </Link>
       </header>
 
-      {/* Stats */}
       <div className={styles.stats}>
-        {STATS.map((s) => (
-          <div key={s.label} className={styles.statCard}>
-            <span className={styles.statValue}>{s.value}</span>
-            <span className={styles.statLabel}>{s.label}</span>
-            <span className={styles.statDelta}>{s.delta}</span>
-          </div>
-        ))}
+        <div className={styles.statCard}>
+          <span className={styles.statValue}>{isLoading ? '—' : stats?.published ?? '—'}</span>
+          <span className={styles.statLabel}>Articles publiés</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statValue}>{isLoading ? '—' : stats?.drafts ?? '—'}</span>
+          <span className={styles.statLabel}>Brouillons</span>
+          {!isLoading && stats?.drafts > 0 && (
+            <span className={styles.statDelta}>{stats.drafts} en attente</span>
+          )}
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statValue}>{isLoading ? '—' : stats?.totalViews ?? '—'}</span>
+          <span className={styles.statLabel}>Vues totales</span>
+        </div>
       </div>
 
-      {/* Derniers articles */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Derniers articles</h2>
@@ -59,18 +70,20 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {RECENT_ARTICLES.map((art) => (
+            {recents.map((art) => (
               <tr key={art.id} className={styles.tr}>
                 <td className={styles.tdTitle}>{art.title}</td>
                 <td className={styles.td}>
-                  <span className={styles.catBadge}>{art.category}</span>
+                  <span className={styles.catBadge}>{art.category?.name || '—'}</span>
                 </td>
                 <td className={styles.td}>
-                  <span className={`${styles.status} ${art.status === 'Publié' ? styles.statusPublished : styles.statusDraft}`}>
-                    {art.status}
+                  <span className={`${styles.status} ${art.status === 'PUBLISHED' ? styles.statusPublished : styles.statusDraft}`}>
+                    {art.status === 'PUBLISHED' ? 'Publié' : 'Brouillon'}
                   </span>
                 </td>
-                <td className={styles.tdMuted}>{art.date}</td>
+                <td className={styles.tdMuted}>
+                  {art.publishedAt ? formatDate(art.publishedAt) : '—'}
+                </td>
                 <td className={styles.tdAction}>
                   <Link to={`/admin/articles/${art.id}/edit`} className={styles.editLink}>
                     Éditer
@@ -81,7 +94,6 @@ export default function Dashboard() {
           </tbody>
         </table>
       </section>
-
     </div>
   )
 }

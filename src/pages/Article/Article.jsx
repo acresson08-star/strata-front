@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom'
 import Header from '../../components/layout/Header/Header'
 import Footer from '../../components/layout/Footer/Footer'
-import { useArticle, useArticles } from '../../hooks/useArticles'
 import { formatDate } from '../../utils/formatDate'
 import styles from './Article.module.css'
 import { useEffect, useState } from 'react'
+import { useArticle, useArticles, useIncrementViews } from '../../hooks/useArticles'
 
 function SimilarArticles({ categorySlug, currentId }) {
   const { articles, isLoading } = useArticles({ category: categorySlug, status: 'published' })
@@ -70,6 +70,7 @@ function estimateReadingTime(content) {
 export default function Article() {
   const { slug } = useParams()
   const { article, isLoading, error } = useArticle(slug)
+  useIncrementViews(article?.id)
 
   if (isLoading) return <><Header /><p className={styles.state}>Chargement…</p><Footer /></>
   if (error || !article) return <><Header /><p className={styles.state}>Article introuvable.</p><Footer /></>
