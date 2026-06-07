@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ============================================
+   STRATA — DESIGN TOKENS
+   ============================================ */
+
+:root {
+  --color-bg:           #F5F3EE;
+  --color-bg-alt:       #EDEBE5;
+  --color-surface:      #E8E4DC;
+  --color-border:       #D4D0C8;
+  --color-black:        #111111;
+
+  --color-text:         #111111;
+  --color-text-muted:   #6B6860;
+  --color-text-faint:   #9A9690;
+
+  --color-accent:       #E4572E;
+  --color-accent-dark:  #C03D1A;
+  --color-blue:         #6D7D8B;
+  --color-kaki:         #A3A66A;
+
+  --color-danger:       #E4572E;
+  --color-success:      #52AA7A;
+
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'DM Serif Text', Georgia, serif;
+  --font-label:   'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --text-xs:    0.6875rem;
+  --text-sm:    0.8125rem;
+  --text-base:  1rem;
+  --text-md:    1.125rem;
+  --text-lg:    1.375rem;
+  --text-xl:    1.75rem;
+  --text-2xl:   2.25rem;
+  --text-3xl:   3rem;
+  --text-4xl:   4rem;
+  --text-5xl:   5.5rem;
+
+  --leading-tight:  1.1;
+  --leading-snug:   1.3;
+  --leading-normal: 1.6;
+  --leading-loose:  1.85;
+
+  --space-1:   0.25rem;
+  --space-2:   0.5rem;
+  --space-3:   0.75rem;
+  --space-4:   1rem;
+  --space-5:   1.25rem;
+  --space-6:   1.5rem;
+  --space-8:   2rem;
+  --space-10:  2.5rem;
+  --space-12:  3rem;
+  --space-16:  4rem;
+  --space-20:  5rem;
+  --space-24:  6rem;
+
+  --container-sm:  640px;
+  --container-md:  768px;
+  --container-lg:  1024px;
+  --container-xl:  1280px;
+  --container-2xl: 1440px;
+
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   8px;
+  --radius-full: 9999px;
+
+  --shadow-sm:  0 1px 3px rgba(17,17,17,0.08);
+  --shadow-md:  0 4px 16px rgba(17,17,17,0.1);
+  --shadow-lg:  0 16px 48px rgba(17,17,17,0.14);
+
+  --transition-fast:   150ms ease;
+  --transition-normal: 280ms ease;
+  --transition-slow:   420ms ease;
+
+  --z-base:     1;
+  --z-dropdown: 100;
+  --z-sticky:   200;
+  --z-modal:    300;
+  --z-toast:    400;
+}
